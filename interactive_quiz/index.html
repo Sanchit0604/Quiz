@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--
+  Project Title : Interactive Quiz Application
+  Author        : Alex Morgan
+  Date          : April 2026
+  Description   : A multiple-choice quiz app covering general knowledge.
+                  Features: question navigation, score tracking,
+                  result display with feedback, and a restart option.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrainBurst — Interactive Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Nunito (rounded, friendly) + Space Mono (monospace accent) -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- =====================================================
+       INTRO / WELCOME SCREEN
+       ===================================================== -->
+  <div id="intro-screen" class="screen active">
+    <div class="card intro-card">
+      <!-- Decorative top badge -->
+      <div class="intro-badge">🧠 General Knowledge</div>
+
+      <h1 class="intro-title">Brain<span class="accent">Burst</span></h1>
+      <p class="intro-tagline">Test your knowledge across science, history, geography, and more!</p>
+
+      <!-- Quiz details -->
+      <ul class="intro-details">
+        <li>
+          <span class="detail-icon">📋</span>
+          <span><strong>10 Questions</strong> — Multiple Choice</span>
+        </li>
+        <li>
+          <span class="detail-icon">⏱️</span>
+          <span><strong>No time limit</strong> — Go at your own pace</span>
+        </li>
+        <li>
+          <span class="detail-icon">🏆</span>
+          <span>Score <strong>8/10 or more</strong> to earn "Genius" status</span>
+        </li>
+      </ul>
+
+      <!-- Start button — triggers quiz via JavaScript -->
+      <button id="start-btn" class="btn btn-primary" onclick="startQuiz()">
+        Start Quiz →
+      </button>
+    </div>
+  </div>
+
+
+  <!-- =====================================================
+       QUIZ SCREEN
+       ===================================================== -->
+  <div id="quiz-screen" class="screen">
+    <div class="card quiz-card">
+
+      <!-- Top bar: progress + score -->
+      <div class="quiz-topbar">
+        <div class="progress-info">
+          <!-- Question counter e.g. "Q 3 / 10" -->
+          <span id="q-counter" class="q-counter">Q 1 / 10</span>
+          <!-- Animated progress bar -->
+          <div class="progress-bar-wrap">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+        </div>
+        <!-- Live score display -->
+        <div class="score-badge">
+          Score: <span id="live-score">0</span>
+        </div>
+      </div>
+
+      <!-- Question text -->
+      <div id="question-area" class="question-area">
+        <p id="question-category" class="question-category">Category</p>
+        <h2 id="question-text" class="question-text">Question goes here…</h2>
+      </div>
+
+      <!-- Answer options — dynamically populated by JavaScript -->
+      <div id="options-area" class="options-area">
+        <!-- Option buttons injected by script.js -->
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="quiz-nav">
+        <!-- "Next" / "Submit" button -->
+        <button id="next-btn" class="btn btn-primary" onclick="nextQuestion()" disabled>
+          Next →
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- =====================================================
+       RESULT SCREEN
+       ===================================================== -->
+  <div id="result-screen" class="screen">
+    <div class="card result-card">
+
+      <!-- Emoji trophy / result icon (set dynamically) -->
+      <div id="result-icon" class="result-icon">🏆</div>
+
+      <!-- Result label e.g. "Excellent!" (set dynamically) -->
+      <h2 id="result-label" class="result-label">Excellent!</h2>
+
+      <!-- Score display e.g. "8 / 10" -->
+      <div class="result-score-wrap">
+        <span id="result-score" class="result-score">0</span>
+        <span class="result-total"> / 10</span>
+      </div>
+
+      <!-- Motivational message (set dynamically) -->
+      <p id="result-message" class="result-message">Great job!</p>
+
+      <!-- Score breakdown bar -->
+      <div class="result-bar-wrap">
+        <div id="result-bar" class="result-bar"></div>
+      </div>
+      <p class="result-bar-label">
+        <span id="result-percent">0%</span> correct
+      </p>
+
+      <!-- Restart button — Bonus Task 6 -->
+      <button id="restart-btn" class="btn btn-primary" onclick="restartQuiz()">
+        🔄 Play Again
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Link JavaScript file -->
+  <script src="script.js"></script>
+</body>
+</html>

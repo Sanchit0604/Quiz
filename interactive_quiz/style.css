@@ -1,0 +1,534 @@
+/* =======================================================
+   Interactive Quiz — style.css
+   Author  : Alex Morgan
+   Date    : April 2026
+   Theme   : Bold game-show aesthetic
+             Deep indigo background · Neon yellow-green accent
+             Rounded chunky cards · Satisfying hover states
+   ======================================================= */
+
+
+/* -------------------------------------------------------
+   1. CSS VARIABLES
+   ------------------------------------------------------- */
+:root {
+  /* Colours */
+  --bg:           #0d0f2b;        /* Deep indigo night sky  */
+  --bg-2:         #13163a;        /* Slightly lighter panel */
+  --card:         #1a1e47;        /* Card surface           */
+  --card-border:  #272c5e;        /* Card border            */
+
+  --accent:       #c8f060;        /* Neon yellow-green      */
+  --accent-dark:  #9dbf3c;        /* Hover accent           */
+  --accent-glow:  rgba(200, 240, 96, 0.18);
+
+  --correct:      #42d392;        /* Answer correct green   */
+  --correct-bg:   rgba(66, 211, 146, 0.15);
+  --wrong:        #ff6b6b;        /* Answer wrong red       */
+  --wrong-bg:     rgba(255, 107, 107, 0.15);
+
+  --text:         #e8ecff;        /* Primary text           */
+  --text-muted:   #8890bb;        /* Muted / secondary      */
+  --text-dark:    #0d0f2b;        /* Text on light bg       */
+
+  /* Typography */
+  --font-main:  'Nunito', sans-serif;
+  --font-mono:  'Space Mono', monospace;
+
+  /* Layout */
+  --radius:     20px;
+  --radius-sm:  10px;
+  --radius-pill: 50px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow:     0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+
+/* -------------------------------------------------------
+   2. RESET & BASE
+   ------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { font-size: 16px; }
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg);
+  /* Subtle dot-grid pattern for depth */
+  background-image: radial-gradient(
+    circle,
+    rgba(200, 240, 96, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 32px 32px;
+  font-family: var(--font-main);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* -------------------------------------------------------
+   3. SCREEN SYSTEM
+   Each "screen" (intro / quiz / result) is hidden by default.
+   Adding the class "active" makes it visible.
+   ------------------------------------------------------- */
+.screen {
+  display: none;           /* Hidden by default */
+  width: 100%;
+  max-width: 660px;
+  animation: fadeUp 0.4s ease both;
+}
+
+/* JavaScript adds this class to show a screen */
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* -------------------------------------------------------
+   4. CARD (shared base for all screens)
+   ------------------------------------------------------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 48px 44px;
+  box-shadow: var(--shadow);
+  /* Box model — margin auto centres horizontally */
+  margin: 0 auto;
+}
+
+
+/* -------------------------------------------------------
+   5. BUTTONS
+   ------------------------------------------------------- */
+/* Primary button */
+.btn {
+  display: inline-block;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 15px 36px;
+  transition: var(--transition);
+  letter-spacing: 0.02em;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-dark);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px var(--accent-glow);
+}
+
+/* Disabled state (before user selects an answer) */
+.btn-primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* -------------------------------------------------------
+   6. INTRO SCREEN
+   ------------------------------------------------------- */
+.intro-card {
+  text-align: center;
+}
+
+/* Pill badge above title */
+.intro-badge {
+  display: inline-block;
+  background: var(--bg-2);
+  border: 1px solid var(--card-border);
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+/* Main title */
+.intro-title {
+  font-size: clamp(2.8rem, 8vw, 4.5rem);
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+/* Accent coloured part of title */
+.accent { color: var(--accent); }
+
+.intro-tagline {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Quiz details list (rules) */
+.intro-details {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+  background: var(--bg-2);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  /* Box model: padding, margin */
+  padding: 24px 28px;
+  margin: 0 0 36px;
+}
+
+.intro-details li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.intro-details strong { color: var(--text); }
+
+.detail-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+
+/* -------------------------------------------------------
+   7. QUIZ SCREEN
+   ------------------------------------------------------- */
+.quiz-card { padding: 36px 44px 40px; }
+
+/* Top bar: counter + progress + score */
+.quiz-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.progress-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* "Q 1 / 10" counter */
+.q-counter {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+/* Progress bar track */
+.progress-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-2);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+/* Progress bar fill — width set by JavaScript */
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #a0d830);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  width: 10%;   /* initial */
+}
+
+/* Live score pill */
+.score-badge {
+  background: var(--bg-2);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-pill);
+  /* Box model: padding, margin */
+  padding: 8px 18px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.score-badge span { color: var(--accent); }
+
+/* Category label above question */
+.question-category {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Question text */
+.question-text {
+  font-size: clamp(1.15rem, 3vw, 1.45rem);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.45;
+  margin-bottom: 28px;
+}
+
+/* Options container — CSS Grid for even layout */
+.options-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+/* Individual option button */
+.option-btn {
+  background: var(--bg-2);
+  border: 2px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  /* Box model: padding, margin */
+  padding: 16px 20px;
+  color: var(--text);
+  font-family: var(--font-main);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.4;
+}
+
+/* Option letter label (A, B, C, D) */
+.option-letter {
+  width: 28px;
+  height: 28px;
+  background: var(--card-border);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+/* Hover state for option buttons */
+.option-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(200, 240, 96, 0.06);
+  transform: translateY(-2px);
+}
+
+.option-btn:hover:not(:disabled) .option-letter {
+  background: var(--accent);
+  color: var(--text-dark);
+}
+
+/* Selected — user has clicked an option */
+.option-btn.selected {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+.option-btn.selected .option-letter {
+  background: var(--accent);
+  color: var(--text-dark);
+}
+
+/* Correct answer — revealed after submission */
+.option-btn.correct {
+  border-color: var(--correct);
+  background: var(--correct-bg);
+  cursor: default;
+}
+
+.option-btn.correct .option-letter {
+  background: var(--correct);
+  color: #fff;
+}
+
+/* Wrong answer — revealed after submission */
+.option-btn.wrong {
+  border-color: var(--wrong);
+  background: var(--wrong-bg);
+  cursor: default;
+}
+
+.option-btn.wrong .option-letter {
+  background: var(--wrong);
+  color: #fff;
+}
+
+/* Disabled state — after answer is locked in */
+.option-btn:disabled {
+  cursor: default;
+  transform: none;
+}
+
+/* Nav area — holds the Next/Submit button */
+.quiz-nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+/* -------------------------------------------------------
+   8. RESULT SCREEN
+   ------------------------------------------------------- */
+.result-card {
+  text-align: center;
+}
+
+/* Large emoji / icon at top */
+.result-icon {
+  font-size: 4.5rem;
+  margin-bottom: 16px;
+  animation: bounceIn 0.6s ease;
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Result label — "Excellent!", "Good Job!", etc. */
+.result-label {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 900;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+/* Score number */
+.result-score-wrap {
+  margin-bottom: 16px;
+}
+
+.result-score {
+  font-family: var(--font-mono);
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.result-total {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  color: var(--text-muted);
+}
+
+/* Motivational message */
+.result-message {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Score percentage bar */
+.result-bar-wrap {
+  width: 100%;
+  height: 10px;
+  background: var(--bg-2);
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  /* Box model: margin */
+  margin-bottom: 8px;
+}
+
+.result-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #a0d830);
+  border-radius: 5px;
+  width: 0;  /* Animated to correct % by JS */
+  transition: width 1s ease 0.3s;
+}
+
+.result-bar-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+.result-bar-label span { color: var(--accent); font-weight: 700; }
+
+
+/* -------------------------------------------------------
+   9. ANIMATIONS & TRANSITIONS
+   ------------------------------------------------------- */
+
+/* Option entry animation — staggered by JS via CSS delay */
+.option-btn {
+  animation: optionSlide 0.3s ease both;
+}
+
+@keyframes optionSlide {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Shake animation for wrong answers */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+.shake { animation: shake 0.4s ease; }
+
+
+/* -------------------------------------------------------
+   10. RESPONSIVE — MEDIA QUERIES
+   ------------------------------------------------------- */
+@media (max-width: 560px) {
+  .card { padding: 32px 24px; }
+  .quiz-card { padding: 28px 20px 32px; }
+
+  /* Stack options in one column on small screens */
+  .options-area { grid-template-columns: 1fr; }
+
+  .intro-title { font-size: 2.5rem; }
+  .result-score { font-size: 3rem; }
+}
